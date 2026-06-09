@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayaan Khann — Building from first principles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --purple: #533afd;
+      --purple-hover: #4434d4;
+      --purple-light: #b9b9f9;
+      --purple-soft: #d6d9fc;
+      --navy: #061b31;
+      --navy-dark: #0d253d;
+      --brand-dark: #1c1e54;
+      --slate: #64748d;
+      --slate-dark: #273951;
+      --border: #e5edf5;
+      --bg: #ffffff;
+      --bg-subtle: #f6f9fc;
+      --ruby: #ea2261;
+      --magenta: #f96bee;
+      --success: #15be53;
+      --success-text: #108c3d;
+      --shadow: rgba(50,50,93,0.25) 0px 30px 45px -30px, rgba(0,0,0,0.1) 0px 18px 36px -18px;
+      --shadow-sm: rgba(23,23,23,0.08) 0px 15px 35px 0px;
+      --font: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --mono: 'Source Code Pro', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      color: var(--navy);
+      background: var(--bg);
+      font-weight: 300;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "ss01";
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav .logo {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--navy);
+      text-decoration: none;
+      letter-spacing: -0.2px;
+    }
+
+    nav .logo span { color: var(--purple); }
+
+    nav .links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    nav .links a {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--slate);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    nav .links a:hover { color: var(--purple); }
+
+    nav .cta {
+      background: var(--purple);
+      color: #fff !important;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    nav .cta:hover { background: var(--purple-hover); }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 120px 2rem 80px;
+      text-align: center;
+    }
+
+    .hero .badge {
+      display: inline-block;
+      background: rgba(83,58,253,0.08);
+      color: var(--purple);
+      font-size: 13px;
+      font-weight: 400;
+      padding: 4px 12px;
+      border-radius: 4px;
+      margin-bottom: 2rem;
+      border: 1px solid var(--purple-soft);
+    }
+
+    .hero h1 {
+      font-size: 56px;
+      font-weight: 300;
+      line-height: 1.03;
+      letter-spacing: -1.4px;
+      color: var(--navy);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--purple), var(--magenta));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--slate);
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero .actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: var(--purple);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: background 0.15s;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    .btn-primary:hover { background: var(--purple-hover); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--purple);
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 400;
+      text-decoration: none;
+      border: 1px solid var(--purple-light);
+      transition: background 0.15s;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    .btn-ghost:hover { background: rgba(83,58,253,0.05); }
+
+    /* ── Section divider ── */
+    .section-divider {
+      height: 1px;
+      background: var(--border);
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* ── Latest Posts ── */
+    .posts-section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 80px 2rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: -0.64px;
+      color: var(--navy);
+    }
+
+    .section-header a {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--purple);
+      text-decoration: none;
+    }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+
+    .post-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .post-card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .post-card .meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .post-card .tag {
+      font-size: 11px;
+      font-weight: 400;
+      padding: 1px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .tag-ai { background: rgba(83,58,253,0.1); color: var(--purple); }
+    .tag-engineering { background: rgba(21,190,83,0.15); color: var(--success-text); }
+    .tag-builders { background: rgba(234,34,97,0.1); color: var(--ruby); }
+    .tag-thinking { background: rgba(100,116,141,0.12); color: var(--slate-dark); }
+
+    .post-card .date {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--slate);
+    }
+
+    .post-card h3 {
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: -0.22px;
+      line-height: 1.2;
+      color: var(--navy);
+      margin-bottom: 0.75rem;
+    }
+
+    .post-card p {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--slate);
+    }
+
+    .post-card .read-more {
+      display: inline-block;
+      margin-top: 1.25rem;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--purple);
+    }
+
+    /* ── Dark section: About ── */
+    .about-section {
+      background: var(--brand-dark);
+      padding: 100px 2rem;
+    }
+
+    .about-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-section h2 {
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: -0.64px;
+      color: #fff;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-section p {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 1rem;
+    }
+
+    .about-section .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 1.25rem;
+    }
+
+    .stat .number {
+      font-size: 26px;
+      font-weight: 300;
+      color: #fff;
+      letter-spacing: -0.26px;
+    }
+
+    .stat .label {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      margin-top: 0.25rem;
+    }
+
+    .about-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .about-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 400;
+      transition: background 0.15s;
+    }
+
+    .about-links a:hover { background: rgba(255,255,255,0.08); }
+
+    .about-links a .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .icon-github { background: rgba(255,255,255,0.1); }
+    .icon-twitter { background: rgba(29,161,242,0.15); }
+    .icon-linkedin { background: rgba(0,119,181,0.15); }
+    .icon-email { background: rgba(83,58,253,0.2); }
+
+    /* ── Newsletter ── */
+    .newsletter {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 80px 2rem;
+      text-align: center;
+    }
+
+    .newsletter h2 {
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: -0.64px;
+      color: var(--navy);
+      margin-bottom: 0.75rem;
+    }
+
+    .newsletter p {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--slate);
+      margin-bottom: 2rem;
+    }
+
+    .newsletter-form {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .newsletter-form input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: var(--font);
+      font-weight: 300;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .newsletter-form input:focus { border-color: var(--purple); }
+    .newsletter-form input::placeholder { color: var(--slate); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--slate);
+    }
+
+    footer a { color: var(--purple); text-decoration: none; }
+
+    /* ── Post page template ── */
+    .post-page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 80px 2rem 120px;
+    }
+
+    .post-page .post-header {
+      margin-bottom: 3rem;
+    }
+
+    .post-page .post-header .meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .post-page h1 {
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: -0.96px;
+      line-height: 1.1;
+      color: var(--navy);
+      margin-bottom: 1rem;
+    }
+
+    .post-page .subtitle {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--slate);
+      line-height: 1.5;
+    }
+
+    .post-page .body {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--navy-dark);
+    }
+
+    .post-page .body p { margin-bottom: 1.5rem; }
+    .post-page .body h2 {
+      font-size: 26px;
+      font-weight: 300;
+      letter-spacing: -0.26px;
+      color: var(--navy);
+      margin: 3rem 0 1rem;
+    }
+    .post-page .body h3 {
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: -0.22px;
+      color: var(--navy);
+      margin: 2rem 0 0.75rem;
+    }
+    .post-page .body code {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--bg-subtle);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--purple);
+    }
+    .post-page .body pre {
+      background: var(--navy);
+      color: #e5edf5;
+      padding: 1.5rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.8;
+    }
+    .post-page .body pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+      font-size: inherit;
+    }
+    .post-page .body blockquote {
+      border-left: 3px solid var(--purple);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--slate);
+      font-style: italic;
+    }
+    .post-page .body ul, .post-page .body ol {
+      margin: 1rem 0 1.5rem 1.5rem;
+    }
+    .post-page .body li {
+      margin-bottom: 0.5rem;
+    }
+    .post-page .body strong { font-weight: 500; }
+    .post-page .body a { color: var(--purple); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 36px; letter-spacing: -0.7px; }
+      .hero p { font-size: 16px; }
+      .posts-grid { grid-template-columns: 1fr; }
+      .about-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .section-header { flex-direction: column; gap: 0.5rem; }
+      .newsletter-form { flex-direction: column; }
+      nav .links { display: none; }
+      .post-page h1 { font-size: 32px; letter-spacing: -0.64px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="/" class="logo">ayaan<span>.</span></a>
+    <div class="links">
+      <a href="#posts">Writing</a>
+      <a href="#about">About</a>
+      <a href="#newsletter">Newsletter</a>
+      <a href="https://github.com/by-Kaimercer" class="cta">Follow on GitHub</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="badge">🧠 Building intelligence from first principles</div>
+    <h1>Thoughts on <em>AI</em>,<br>building, and everything<br>in between.</h1>
+    <p>I'm Ayaan — a 17-year-old applied AI engineer, 3x founder, and competitive sprinter. I write about building things that matter.</p>
+    <div class="actions">
+      <a href="#posts" class="btn-primary">Read the writing</a>
+      <a href="#about" class="btn-ghost">About me</a>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Latest Posts -->
+  <section class="posts-section" id="posts">
+    <div class="section-header">
+      <h2>Latest writing</h2>
+      <a href="#newsletter">Get notified →</a>
+    </div>
+    <div class="posts-grid">
+
+      <a href="#" class="post-card">
+        <div class="meta">
+          <span class="tag tag-ai">AI</span>
+          <span class="date">Coming soon</span>
+        </div>
+        <h3>Building a Custom Autograd Engine in Python</h3>
+        <p>Why I stopped importing PyTorch and started implementing backpropagation from scratch — and what it taught me about how neural networks actually work.</p>
+        <span class="read-more">Read essay →</span>
+      </a>
+
+      <a href="#" class="post-card">
+        <div class="meta">
+          <span class="tag tag-engineering">Engineering</span>
+          <span class="date">Coming soon</span>
+        </div>
+        <h3>What Contributing to Open Source Taught Me About Code Quality</h3>
+        <p>My first merged PR into a major Python library, and the unexpected lessons about writing code that other humans need to read.</p>
+        <span class="read-more">Read essay →</span>
+      </a>
+
+      <a href="#" class="post-card">
+        <div class="meta">
+          <span class="tag tag-builders">Building</span>
+          <span class="date">Coming soon</span>
+        </div>
+        <h3>3x Founder at 17: What I've Learned So Far</h3>
+        <p>The unglamorous truth about starting companies as a teenager — the wins, the failures, and the patterns I keep seeing.</p>
+        <span class="read-more">Read essay →</span>
+      </a>
+
+      <a href="#" class="post-card">
+        <div class="meta">
+          <span class="tag tag-thinking">Thinking</span>
+          <span class="date">Coming soon</span>
+        </div>
+        <h3>Why Speed Matters More Than Perfection</h3>
+        <p>Lessons from competitive sprinting applied to building products and writing code. Ship fast, iterate faster.</p>
+        <span class="read-more">Read essay →</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- About (dark section) -->
+  <section class="about-section" id="about">
+    <div class="about-inner">
+      <div>
+        <h2>Hey, I'm Ayaan 👋</h2>
+        <p>I'm almost 17, from Jaipur, India. I'm an applied AI engineer, 3x founder, and competitive 100m sprinter.</p>
+        <p>I believe deep understanding enables great engineering. I don't just import libraries — I implement them. My work lives at the intersection of mathematical foundations and production systems.</p>
+        <p>Currently building: custom autograd engines, transformers from scratch, and scalable training pipelines. Also running a fashion jewelry startup with 3 friends.</p>
+        <div class="stats">
+          <div class="stat">
+            <div class="number">3x</div>
+            <div class="label">Founder</div>
+          </div>
+          <div class="stat">
+            <div class="number">~17</div>
+            <div class="label">Years old</div>
+          </div>
+          <div class="stat">
+            <div class="number">6+</div>
+            <div class="label">GitHub repos</div>
+          </div>
+          <div class="stat">
+            <div class="number">1</div>
+            <div class="label">Open source PR merged</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-links">
+        <a href="https://github.com/by-Kaimercer">
+          <span class="icon icon-github">GH</span>
+          <span>github.com/by-Kaimercer</span>
+        </a>
+        <a href="https://twitter.com/">
+          <span class="icon icon-twitter">X</span>
+          <span>Coming soon</span>
+        </a>
+        <a href="https://linkedin.com/">
+          <span class="icon icon-linkedin">in</span>
+          <span>Coming soon</span>
+        </a>
+        <a href="mailto:by.ayaankhan@gmail.com">
+          <span class="icon icon-email">@</span>
+          <span>by.ayaankhan@gmail.com</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="newsletter" id="newsletter">
+    <h2>Stay in the loop</h2>
+    <p>Get notified when I publish new writing. No spam, just signal.</p>
+    <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Coming soon!');">
+      <input type="email" placeholder="your@email.com" required>
+      <button type="submit" class="btn-primary">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>Built by <a href="https://github.com/by-Kaimercer">Ayaan Khann</a> · © 2026 · All rights reserved</p>
+  </footer>
+
+</body>
+</html>
